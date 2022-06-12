@@ -1,24 +1,21 @@
 import { defineStore } from "pinia";
+import { useLocalStorage, useSessionStorage } from "@vueuse/core";
 
 export const useCounterStore = defineStore("counter", {
   state: () => {
     return {
-      counterList: [
-        {
-          name: "Primero",
-          count: 0,
-        },
-        {
-          name: "Segundo",
-          count: 2,
-        },
-      ],
-      sortTypeIndex: 0,
-      filterRange: [],
+      counterList: useLocalStorage("counterList", []),
+      sortTypeIndex: useSessionStorage("sortTypeIndex", 0),
+      filterRange: useSessionStorage("filterRange", []),
     };
   },
   getters: {
-    getCounterList: (state) => state.counterList,
+    getCounterList: (state) => {
+      if (state.filterRange.length) {
+        console.log("filtros funcionan");
+      }
+      return state.counterList;
+    },
     getTotalSumOfCounters: (state) => {
       return state.counterList.reduce((acc, val) => acc + val.count, 0);
     },
@@ -29,6 +26,7 @@ export const useCounterStore = defineStore("counter", {
   },
   actions: {
     addCounterToList(name) {
+      if (this.counterList.length >= 20) return;
       this.counterList.push({ name, count: 0 });
     },
     deleteCounter({ name }) {
