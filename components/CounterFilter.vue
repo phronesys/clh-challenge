@@ -19,7 +19,7 @@
         max-length="20"
         @value-change="updateMax"
       ></base-input>
-      <base-button @click="updateFilter">🤣</base-button>
+      <base-button @click="updateFilter">➡️</base-button>
     </div>
     <ul class="filters">
       <li>
