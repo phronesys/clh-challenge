@@ -2,13 +2,15 @@
   <div class="counter-sort">
     <h3>Ordenar por</h3>
     <div class="select">
-      <base-button @click="openSelect">{{ sortType[typeIndex] }}</base-button>
+      <base-button @click="openSelect">
+        {{ sortType[counterStore.sortTypeIndex] }}
+      </base-button>
       <ul class="list" v-if="select">
         <li
           v-for="(type, index) in sortType"
           :key="type"
           @click="setTypeIndex(index)"
-          :class="index === typeIndex ? 'selected' : ''"
+          :class="index === counterStore.sortTypeIndex ? 'selected' : ''"
         >
           {{ type }}
         </li>
@@ -18,19 +20,24 @@
 </template>
 
 <script>
+import { useCounterStore } from "~~/stores/counter";
 export default {
   name: "CounterSort",
   data: () => ({
     select: false,
-    typeIndex: 0,
     sortType: ["Nombre ⬆️", "Nombre ⬇️", "Contador ⬆️", "Contador ⬇️"],
   }),
+  setup: () => {
+    const counterStore = useCounterStore();
+    const { setSortTypeIndex } = counterStore;
+    return { counterStore, setSortTypeIndex };
+  },
   methods: {
     openSelect() {
       this.select = !this.select;
     },
     setTypeIndex(index) {
-      this.typeIndex = index;
+      this.setSortTypeIndex(index);
       this.select = false; // close select
     },
   },

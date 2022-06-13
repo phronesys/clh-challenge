@@ -22,11 +22,27 @@ export const useCounterStore = defineStore("counter", {
       switch (state.sortTypeIndex) {
         case 0:
           // name ascendente
-          counterList.sort((a, b) => a.name - b.name);
+          counterList.sort((a, b) => {
+            if (a.name > b.name) {
+              return -1;
+            }
+            if (a.name < b.name) {
+              return 1;
+            }
+            return 0;
+          });
           break;
         case 1:
           // name descendente
-          counterList.sort((a, b) => b.name - a.name);
+          counterList.sort((a, b) => {
+            if (a.name < b.name) {
+              return -1;
+            }
+            if (a.name > b.name) {
+              return 1;
+            }
+            return 0;
+          });
           break;
         case 2:
           // counter ascendente
@@ -52,6 +68,7 @@ export const useCounterStore = defineStore("counter", {
     getFilterRange: (state) => state.filterRange,
   },
   actions: {
+    /* counters */
     addCounterToList(name) {
       if (this.counterList.length >= 20) return;
       this.counterList.push({ name, count: 0 });
@@ -67,6 +84,7 @@ export const useCounterStore = defineStore("counter", {
     decreaseCounterByName(name) {
       this.getCounterByName(name).count--;
     },
+    /* filters */
     resetMaxFilter() {
       const [min, max] = this.filterRange;
       this.filterRange = [min, 20];
@@ -77,6 +95,10 @@ export const useCounterStore = defineStore("counter", {
     },
     updateFilters(min, max) {
       this.filterRange = [Number(min), Number(max)];
+    },
+    /* sort */
+    setSortTypeIndex(index) {
+      this.sortTypeIndex = index;
     },
   },
 });
