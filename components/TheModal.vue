@@ -31,7 +31,7 @@ export default {
       this.$emit("close-modal");
     },
     addCounter() {
-      if (this.name.length <= 0) return;
+      if (this.name.length <= 0 || this.name.length > 20) return;
       this.addCounterToList(this.name);
       this.closeModal();
     },
