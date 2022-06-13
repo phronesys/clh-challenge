@@ -1,7 +1,11 @@
 <template>
   <div class="counter-list">
     <header>
-      <base-button class="ml-auto" @click="openModal">
+      <base-button
+        :disabled="counterStore.getCounterList.length >= 20"
+        class="ml-auto"
+        @click="openModal"
+      >
         Crear contador
       </base-button>
     </header>
