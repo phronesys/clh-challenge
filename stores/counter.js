@@ -6,23 +6,50 @@ export const useCounterStore = defineStore("counter", {
     return {
       counterList: useLocalStorage("counterList", []),
       sortTypeIndex: useSessionStorage("sortTypeIndex", 0),
-      filterRange: useSessionStorage("filterRange", []),
+      filterRange: useSessionStorage("filterRange", [0, 20]),
     };
   },
   getters: {
     getCounterList: (state) => {
-      if (state.filterRange.length) {
-        console.log("filtros funcionan");
+      // apply filters
+      let counterList = state.counterList.filter(
+        (counter) =>
+          counter.count >= state.filterRange[0] &&
+          counter.count <= state.filterRange[1]
+      );
+
+      // sort by
+      switch (state.sortTypeIndex) {
+        case 0:
+          // name ascendente
+          counterList.sort((a, b) => a.name - b.name);
+          break;
+        case 1:
+          // name descendente
+          counterList.sort((a, b) => b.name - a.name);
+          break;
+        case 2:
+          // counter ascendente
+          counterList.sort((a, b) => a.count - b.count);
+          break;
+        case 3:
+          // counter descendente
+          counterList.sort((a, b) => b.count - a.count);
+          break;
+        default:
+          break;
       }
-      return state.counterList;
+
+      return counterList;
     },
     getTotalSumOfCounters: (state) => {
-      return state.counterList.reduce((acc, val) => acc + val.count, 0);
+      return state.counterList.reduce((acc, counter) => acc + counter.count, 0);
     },
     getCounterByName: (state) => {
       return (name) =>
         state.counterList.find((counter) => counter.name === name);
     },
+    getFilterRange: (state) => state.filterRange,
   },
   actions: {
     addCounterToList(name) {
@@ -39,6 +66,17 @@ export const useCounterStore = defineStore("counter", {
     },
     decreaseCounterByName(name) {
       this.getCounterByName(name).count--;
+    },
+    resetMaxFilter() {
+      const [min, max] = this.filterRange;
+      this.filterRange = [min, 20];
+    },
+    resetMinFilter() {
+      const [min, max] = this.filterRange;
+      this.filterRange = [0, max];
+    },
+    updateFilters(min, max) {
+      this.filterRange = [Number(min), Number(max)];
     },
   },
 });
