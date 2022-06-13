@@ -51,7 +51,7 @@ export default {
   @apply p-4 flex flex-col gap-4 max-w-max;
   @apply shadow-lg rounded-lg;
   & > header {
-    @apply flex gap-4;
+    @apply flex gap-4 justify-between;
     & > h3 {
       @apply text-lg font-bold;
     }
